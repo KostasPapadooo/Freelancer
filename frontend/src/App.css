@@ -1,0 +1,205 @@
+/* General styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f6f9; /* Light background color for modern feel */
+    color: #333; /* Dark text for readability */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+/* Material UI specific tweaks */
+.MuiButton-root {
+    font-weight: 500;
+    text-transform: none; /* Keep button text in normal case */
+}
+
+.MuiTypography-root {
+    font-family: 'Roboto', sans-serif;
+}
+
+.MuiPaper-root {
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* General container with smooth transitions */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Header styling */
+.header {
+    background-color: #3f51b5; /* Material blue color */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.header:hover {
+    background-color: #303f9f; /* Slightly darker blue on hover */
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Main content sections */
+.section {
+    padding: 50px 0;
+}
+
+.section .MuiPaper-root {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Animation for section appearance */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form elements */
+input, textarea {
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: #3f51b5;
+    outline: none;
+}
+
+button {
+    background-color: #3f51b5;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #303f9f;
+}
+
+/* Cards & Info containers */
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card .MuiCardContent-root {
+    padding: 20px;
+}
+
+/* Side navigation bar */
+.sidebar {
+    background-color: #fff;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100%;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+
+.sidebar.active {
+    transform: translateX(0);
+}
+
+.sidebar h2 {
+    font-size: 1.8rem;
+    color: #3f51b5;
+    margin-bottom: 20px;
+}
+
+/* Footer styling */
+.footer {
+    background-color: #3f51b5;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.footer p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Smooth transition for main content */
+.main-content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 0;
+}
+
+.main-content.sidebar-active {
+    margin-left: 250px; /* When sidebar is active */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content.sidebar-active {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 15px 0;
+    }
+
+    .sidebar {
+        width: 180px;
+        padding: 20px;
+    }
+
+    .footer {
+        font-size: 0.9rem;
+    }
+}
