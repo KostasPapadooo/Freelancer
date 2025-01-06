@@ -10,10 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3001") // Αλλαγή διεύθυνσης για το frontend
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOrigins("http://localhost:3000") // Διεύθυνση του frontend στο localhost:3000
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Συμπεριλαμβάνει τις μεθόδους
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .maxAge(3600);
+                .maxAge(3600); // Ρυθμίστε το για το χρονικό διάστημα που είναι έγκυρο το CORS preflight
     }
 }

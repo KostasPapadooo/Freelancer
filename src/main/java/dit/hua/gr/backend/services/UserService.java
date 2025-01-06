@@ -3,12 +3,15 @@ package dit.hua.gr.backend.services;
 import dit.hua.gr.backend.models.User;
 import dit.hua.gr.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -39,5 +42,19 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUserByUsername(username); // Χρησιμοποιούμε την υπάρχουσα μέθοδο
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword()) // Βεβαιωθείτε ότι το password είναι σωστά κρυπτογραφημένο
+                .authorities(user.getAuthorities()) // Υποθέτοντας ότι έχετε μεθόδους για να πάρετε τις αρχές του χρήστη
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(false)
+                .build();
     }
 }
