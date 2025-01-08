@@ -1,9 +1,19 @@
 import axios from 'axios';
 
+// Συνάρτηση για να πάρεις το token (μπορείς να το πάρεις από το localStorage ή το sessionStorage)
+const getAuthToken = () => {
+    return localStorage.getItem("authToken"); // Παράδειγμα, αναλόγως το πώς αποθηκεύεις το JWT
+};
+
 // Λήψη των έργων του πελάτη
 export const getClientProjects = async (clientId) => {
     try {
-        const response = await axios.get(`/api/projects/client/${clientId}`);
+        const token = getAuthToken(); // Λήψη του token
+        const response = await axios.get(`/api/projects/client/${clientId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Προσθήκη του token στα headers
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching client projects:', error);
@@ -14,7 +24,12 @@ export const getClientProjects = async (clientId) => {
 // Λήψη των αιτήσεων για έργο
 export const getApplicationsForProject = async (projectId) => {
     try {
-        const response = await axios.get(`/api/applications/project/${projectId}`);
+        const token = getAuthToken(); // Λήψη του token
+        const response = await axios.get(`/api/applications/project/${projectId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Προσθήκη του token στα headers
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching applications for project:', error);
@@ -25,7 +40,12 @@ export const getApplicationsForProject = async (projectId) => {
 // Δημιουργία νέου έργου
 export const createProject = async (projectData) => {
     try {
-        const response = await axios.post('/api/projects', projectData);
+        const token = getAuthToken(); // Λήψη του token
+        const response = await axios.post('/api/projects', projectData, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Προσθήκη του token στα headers
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating project:', error);
@@ -36,7 +56,12 @@ export const createProject = async (projectData) => {
 // Λήψη των διαθέσιμων έργων για freelancers
 export const getAvailableProjects = async () => {
     try {
-        const response = await axios.get('/api/projects/available');
+        const token = getAuthToken(); // Λήψη του token
+        const response = await axios.get('/api/projects/available', {
+            headers: {
+                Authorization: `Bearer ${token}`, // Προσθήκη του token στα headers
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching available projects:', error);
@@ -47,7 +72,12 @@ export const getAvailableProjects = async () => {
 // Λήψη των αιτήσεων του freelancer
 export const getFreelancerApplications = async (freelancerId) => {
     try {
-        const response = await axios.get(`/api/applications/freelancer/${freelancerId}`);
+        const token = getAuthToken(); // Λήψη του token
+        const response = await axios.get(`/api/applications/freelancer/${freelancerId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Προσθήκη του token στα headers
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching freelancer applications:', error);

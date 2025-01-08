@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000") // Επιτρέπει το frontend από localhost:3000
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true") // Επιτρέπει το frontend από localhost:3000
 public class LoginController {
 
     private final AuthenticationService authenticationService;

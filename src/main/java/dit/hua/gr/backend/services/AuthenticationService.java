@@ -2,23 +2,23 @@ package dit.hua.gr.backend.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm; // Προσθήκη της εισαγωγής
-import io.jsonwebtoken.security.Keys; // Προσθήκη της εισαγωγής
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey; // Προσθήκη της εισαγωγής
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
 @Service
 public class AuthenticationService {
 
-    private final UserService userDetailsService; // Υπηρεσία για την ανάκτηση χρηστών
+    private final UserService userService;
 
-    public AuthenticationService(UserService UserService) {
-        this.userDetailsService = UserService;
+    public AuthenticationService(UserService userService) {
+        this.userService = userService;
     }
 
     // Μέθοδος για αυθεντικοποίηση με JWT
@@ -28,13 +28,13 @@ public class AuthenticationService {
 
             // Επαλήθευση του JWT και ανάκτηση των claims
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSecretKey(secretKey)) // Χρησιμοποιούμε τη μέθοδο getSecretKey
+                    .setSigningKey(getSecretKey(secretKey))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
-            String email = claims.getSubject();  // Χρησιμοποιούμε το email ως subject
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            String email = claims.getSubject(); // Χρησιμοποιούμε το email ως subject
+            UserDetails userDetails = userService.loadUserByUsername(email);
 
             // Δημιουργία του Authentication object
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -46,10 +46,15 @@ public class AuthenticationService {
 
     // Νέα μέθοδος για αυθεντικοποίηση με email και password
     public String authenticate(String email, String password) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        try {
+            UserDetails userDetails = userService.loadUserByUsername(email);
 
-        if (userDetails != null && password.equals(userDetails.getPassword())) { // Εδώ θα πρέπει να συγκρίνετε με κρυπτογραφημένο password
-            return generateToken(userDetails); // Δημιουργία και επιστροφή του JWT token
+            if (userDetails != null && password.equals(userDetails.getPassword())) { // Συγκρίνουμε με κρυπτογραφημένο password
+                return generateToken(userDetails);
+            }
+        } catch (RuntimeException e) {
+            // Χειρισμός λάθους αν ο χρήστης δεν βρεθεί
+            return null;
         }
         return null; // Αν οι πιστοποιήσεις είναι λανθασμένες
     }
@@ -58,12 +63,12 @@ public class AuthenticationService {
         String secretKey = "your_secret_key"; // Το μυστικό σας κλειδί
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())  // Εδώ το username είναι το email
-                .signWith(getSecretKey(secretKey), SignatureAlgorithm.HS256) // Χρησιμοποιούμε τη μέθοδο getSecretKey
+                .setSubject(userDetails.getUsername()) // Εδώ το username είναι το email
+                .signWith(getSecretKey(secretKey), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     private SecretKey getSecretKey(String secret) {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // Δημιουργία του Secret Key από το byte array
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 }

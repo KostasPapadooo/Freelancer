@@ -3,15 +3,15 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import { RoleProvider } from "./context/RoleContext";
-
-// Το BrowserRouter πρέπει να περιβάλλει μόνο την εφαρμογή, όχι τα context providers
 import { BrowserRouter } from "react-router-dom";
 
+// Δημιουργία του root element
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+// Render της εφαρμογής με τους παρόχους και το BrowserRouter
 root.render(
     <React.StrictMode>
-        <BrowserRouter> {/* Εδώ είναι το μόνο σημείο που το BrowserRouter πρέπει να υπάρχει */}
+        <BrowserRouter>
             <AuthProvider>
                 <RoleProvider>
                     <App />

@@ -28,13 +28,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id);
     }
 
-    // Ενημέρωση για το getUserByUsername
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }
 
-    // Ενημέρωση για το getUserByEmail
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
@@ -45,12 +43,18 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserByUsername(username); // Χρησιμοποιούμε την υπάρχουσα μέθοδο
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        User user;
+        if (usernameOrEmail.contains("@")) {
+            user = getUserByEmail(usernameOrEmail);
+        } else {
+            user = getUserByUsername(usernameOrEmail);
+        }
+
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
-                .password(user.getPassword()) // Βεβαιωθείτε ότι το password είναι σωστά κρυπτογραφημένο
-                .authorities(user.getAuthorities()) // Υποθέτοντας ότι έχετε μεθόδους για να πάρετε τις αρχές του χρήστη
+                .password(user.getPassword())
+                .authorities(user.getAuthorities()) // Ensure user.getAuthorities() is properly implemented
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)

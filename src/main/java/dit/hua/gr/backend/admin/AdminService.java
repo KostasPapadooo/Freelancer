@@ -9,8 +9,8 @@ import dit.hua.gr.backend.repositories.ProjectRepository;
 import dit.hua.gr.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -32,7 +32,7 @@ public class AdminService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
     }
 
     public User createUser(User user) {
@@ -41,16 +41,16 @@ public class AdminService {
 
     public User updateUser(Long id, User updatedUser) {
         User existingUser = getUserById(id);
-        if (existingUser != null) {
-            existingUser.setUsername(updatedUser.getUsername());
-            existingUser.setEmail(updatedUser.getEmail());
-            // Ενημερώστε άλλα πεδία αν χρειάζεται
-            return userRepository.save(existingUser);
-        }
-        return null; // ή ρίξτε εξαίρεση
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setEmail(updatedUser.getEmail());
+        // Ενημερώστε άλλα πεδία αν χρειάζεται
+        return userRepository.save(existingUser);
     }
 
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found with ID: " + id);
+        }
         userRepository.deleteById(id);
     }
 
@@ -60,20 +60,24 @@ public class AdminService {
     }
 
     public Project approveProject(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElse(null);
-        if (project != null) {
-            project.setStatus(ProjectStatus.APPROVED);
-            return projectRepository.save(project);
-        }
-        return null; // ή ρίξτε εξαίρεση
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found with ID: " + projectId));
+        project.setStatus(ProjectStatus.APPROVED);
+        return projectRepository.save(project);
     }
 
     public void rejectProject(Long projectId) {
+        if (!projectRepository.existsById(projectId)) {
+            throw new IllegalArgumentException("Project not found with ID: " + projectId);
+        }
         projectRepository.deleteById(projectId);
     }
 
     // Διαχείριση αιτήσεων
     public List<Application> getApplicationsForProject(Long projectId) {
+        if (!projectRepository.existsById(projectId)) {
+            throw new IllegalArgumentException("Project not found with ID: " + projectId);
+        }
         return applicationRepository.findByProjectId(projectId);
     }
 
